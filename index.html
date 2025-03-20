@@ -18,6 +18,24 @@
         <button id="clear">Clear Day</button>
     </div>
 
+    <!-- Popup for editing time slots -->
+    <div id="popup" class="popup">
+        <h3>Edit Time Slot</h3>
+        <p id="popup-time"></p>
+        <label for="label-input">Label:</label>
+        <input type="text" id="label-input" placeholder="Enter label">
+        <label for="color-input">Color:</label>
+        <select id="color-input">
+            <option value="#28a745">Green (Work)</option>
+            <option value="#007BFF">Blue (Exercise)</option>
+            <option value="#FFC107">Yellow (Break)</option>
+            <option value="#DC3545">Red (Important)</option>
+            <option value="#6C757D">Gray (Free Time)</option>
+        </select>
+        <button id="save-btn">Save</button>
+        <button id="cancel-btn">Cancel</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
