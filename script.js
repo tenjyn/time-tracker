@@ -5,7 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const dateDisplay = document.getElementById("date-display");
     const clearBtn = document.getElementById("clear");
 
+    const popup = document.getElementById("popup");
+    const popupTime = document.getElementById("popup-time");
+    const labelInput = document.getElementById("label-input");
+    const colorInput = document.getElementById("color-input");
+    const saveBtn = document.getElementById("save-btn");
+    const cancelBtn = document.getElementById("cancel-btn");
+
     let currentDate = new Date().toISOString().split("T")[0];
+    let selectedSlot = null;
 
     function generateGrid() {
         grid.innerHTML = "";
@@ -27,24 +35,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadFromLocalStorage() {
-        const savedData = JSON.parse(localStorage.getItem(currentDate)) || [];
+        const savedData = JSON.parse(localStorage.getItem(currentDate)) || {};
         document.querySelectorAll(".time-slot").forEach(slot => {
-            if (savedData.includes(slot.dataset.time)) {
-                slot.classList.add("active");
+            if (savedData[slot.dataset.time]) {
+                slot.style.backgroundColor = savedData[slot.dataset.time].color;
+                slot.textContent = `${slot.dataset.time}\n${savedData[slot.dataset.time].label}`;
             }
-            slot.addEventListener("click", () => toggleSlot(slot));
+            slot.addEventListener("click", () => openPopup(slot));
         });
     }
 
-    function toggleSlot(slot) {
-        slot.classList.toggle("active");
-        saveToLocalStorage();
+    function openPopup(slot) {
+        selectedSlot = slot;
+        popup.style.display = "block";
+        popupTime.textContent = `Editing: ${slot.dataset.time}`;
+        labelInput.value = slot.textContent.split("\n")[1] || "";
     }
 
     function saveToLocalStorage() {
-        const activeSlots = Array.from(document.querySelectorAll(".time-slot.active"))
-            .map(slot => slot.dataset.time);
-        localStorage.setItem(currentDate, JSON.stringify(activeSlots));
+        const savedData = JSON.parse(localStorage.getItem(currentDate)) || {};
+        if (selectedSlot) {
+            const label = labelInput.value;
+            const color = colorInput.value;
+            savedData[selectedSlot.dataset.time] = { label, color };
+            localStorage.setItem(currentDate, JSON.stringify(savedData));
+
+            selectedSlot.style.backgroundColor = color;
+            selectedSlot.textContent = `${selectedSlot.dataset.time}\n${label}`;
+            popup.style.display = "none";
+        }
     }
 
     function updateDateDisplay() {
@@ -69,6 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem(currentDate);
         generateGrid();
     });
+
+    saveBtn.addEventListener("click", saveToLocalStorage);
+    cancelBtn.addEventListener("click", () => (popup.style.display = "none"));
 
     updateDateDisplay();
     generateGrid();
