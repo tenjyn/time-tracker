@@ -66,6 +66,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function updateDateDisplay() {
+        dateDisplay.textContent = new Date(currentDate).toDateString();
+    }
+
+    prevDayBtn.addEventListener("click", () => {
+        currentDate = new Date(new Date(currentDate).setDate(new Date(currentDate).getDate() - 1))
+            .toISOString().split("T")[0];
+        updateDateDisplay();
+        generateGrid();
+    });
+
+    nextDayBtn.addEventListener("click", () => {
+        currentDate = new Date(new Date(currentDate).setDate(new Date(currentDate).getDate() + 1))
+            .toISOString().split("T")[0];
+        updateDateDisplay();
+        generateGrid();
+    });
+
+    clearBtn.addEventListener("click", () => {
+        localStorage.removeItem(currentDate);
+        generateGrid();
+    });
+
+    saveBtn.addEventListener("click", saveToLocalStorage);
+    cancelBtn.addEventListener("click", () => (popup.style.display = "none"));
+
     updateDateDisplay();
     generateGrid();
 });
